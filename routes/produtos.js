@@ -82,6 +82,7 @@ router.patch('/', (req, res, next) => {
   })
 })
 
+
 // Delete a product
 router.delete('/', (req, res, next) => {
   mysql.getConnection((error, conn) => {
