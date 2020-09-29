@@ -139,3 +139,57 @@ exports.deleteProduto = async (req, res, next) => {
     res.status(500).send({ error })
   }
 }
+
+exports.postImagem = async (req, res, next) => {
+  try {
+    const query = "INSERT INTO imagens_produtos (id_produto, caminho) VALUES (?, ?)"
+    const result = await mysql.execute(
+      query,
+      [req.params.id_produto, req.file.path],
+    )
+
+    const response = {
+      mensagem: "Imagem inserida com sucesso",
+      imagemCriada: {
+        id_produto: req.params.id_produto,
+        id_imagem: result.insertId,
+        imagem_produto: req.file.path,
+        request: {
+          tipo: "GET",
+          descricao: "Retorna todas as imagens",
+          url: "http://localhost:3000/produtos/" + req.params.id_produto + '/imagens'
+        }
+      }
+    }
+
+    return res.status(201).send(response)
+
+  } catch (error) {
+    return res.status(500).send({ error })
+  }
+}
+
+exports.getImagens = async (req, res, next) => {
+  try {
+    const query = "SELECT * FROM imagens_produtos WHERE id_produto = ?;"
+    const result = await mysql.execute(query, [req.params.id_produto])
+    const response = {
+      quantidade: result.length,
+      imagens: result.map((img) => {
+        return {
+          id_imagem: img.id_imagem,
+          caminho: img.caminho,
+          id_produto: parseFloat(req.params.id_produto),
+          request: {
+            tipo: 'GET',
+            descricao: 'Retorna os detalhes de um produto',
+            url: 'http://localhost/3000/produtos/' + img.id_produto
+          }
+        }
+      })
+    }
+    return res.status(200).send(response)  
+  } catch (error) {
+    return res.status(500).send({ error })
+  }
+}
