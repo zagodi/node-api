@@ -22,7 +22,7 @@ exports.getPedidos = (req, res, next) => {
               produto: {
                 id_produto: pedido.id_produto,
                 nome: pedido.nome,
-                preco: predido.preco
+                preco: pedido.preco
               },
               nome: pedido.nome,
               quantidade: pedido.quantidade,
